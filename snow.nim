@@ -14,9 +14,10 @@ type Snow = object
 
 
 proc draw(ctx: CanvasRenderingContext2D, snow: ref Snow) =
+  const twoPi: float = math.PI * 2.0
   ctx.fillStyle = snow.color
   ctx.beginPath()
-  ctx.arc(snow.pt.x, snow.pt.y, snow.size / 2.0, 0.0, math.PI * 2.0, true)
+  ctx.arc(snow.pt.x, snow.pt.y, snow.size / 2.0, 0.0, twoPi, true)
   ctx.fill()
 
 
@@ -29,37 +30,42 @@ proc move(snow: ref Snow, width: float, height: float) =
     dy: float = random(max=1.0) * dvyMax
     m: Matrix2d = move(dx, dy)
   snow.pt &= m
-  if snow.pt.x > width:
-    snow.pt.x -= width
-  if snow.pt.y > height:
-    snow.pt.y -= height
+  if snow.pt.x > width: snow.pt.x -= width
+  if snow.pt.y > height: snow.pt.y -= height
 
 
-proc loop(canvas: Canvas, snows: openArray[ref Snow]) =
+proc cls(ctx: CanvasRenderingContext2D, width: float, height: float) =
   const bgcolor: cstring = "#0D0015"
-  let ctx: CanvasRenderingContext2D = cvs.getContext2D(canvas)
   ctx.fillStyle = bgcolor
-  ctx.fillRect(0.0, 0.0, canvas.width.toFloat, canvas.height.toFloat)
+  ctx.fillRect(0.0, 0.0, width, height)
+
+
+proc loop(canvas: Canvas, snows: seq[ref Snow]) =
+  let
+    width: float = canvas.width.toFloat
+    height: float = canvas.height.toFloat
+    ctx: CanvasRenderingContext2D = cvs.getContext2D(canvas)
+  ctx.cls(width, height)
   for snow in snows:
     draw(ctx, snow)
-  for snow in snows:
-    move(snow, canvas.width.toFloat, canvas.height.toFloat)
+    move(snow, width, height)
 
 
 proc makeSnow(n: int, width: float, height: float): seq[ref Snow] =
-  const
-    sizeMax: float = 22.0
-  var snows: seq[ref Snow]
+  const sizeMax: float = 22.0
+  var snows: seq[ref Snow] = newSeq[ref Snow](n)
   for i in countup(0, n - 1):
-    let snow = Snow.new
+    let
+      size: float = random(max=1.0) * sizeMax
+      snow: ref Snow = Snow.new
     snow.pt = basic2d.point2d(random(max=width), random(max=height))
-    snow.size = random(max=1.0) * sizeMax
+    snow.size = size
     snow.color =
-      if snow.size < 5.0: "#A0A0A0"
-      elif snow.size < 10.0: "#C0C0C0"
-      elif snow.size < 15.0: "#E0E0E0"
+      if size < 5.0: "#A0A0A0"
+      elif size < 10.0: "#C0C0C0"
+      elif size < 15.0: "#E0E0E0"
       else: "#FFFFFF"
-    snows.safeAdd(snow)
+    snows[i] = snow
   return snows
 
 
@@ -77,7 +83,7 @@ proc quickSort(snows: seq[ref Snow]): seq[ref Snow] =
                    , ref Snow
           ]
       large: seq[ref Snow] =
-        lc[ snow | (snow <- snows
+        lc[ snow | ( snow <- snows
                    , snow.size > snows[0].size
                    , snow != snows[0]
                    )
@@ -91,10 +97,12 @@ proc main() =
     ID: cstring = "snow"
     WIDTH: int = 1000
     HEIGHT: int = 500
+    FWIDTH: float = WIDTH.toFloat
+    FHEIGHT: float = HEIGHT.toFloat
     N: int = 100
     MS: int = 16
   randomize()
-  var snows: seq[ref Snow] = makeSnow(N, WIDTH.toFloat, HEIGHT.toFloat)
+  var snows: seq[ref Snow] = makeSnow(N, FWIDTH, FHEIGHT)
   snows = snows.quickSort()
   let canvas: Canvas = Canvas(document.getElementById(ID))
   canvas.width = WIDTH
