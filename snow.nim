@@ -69,7 +69,7 @@ proc makeSnow(n: int, width: float, height: float): seq[ref Snow] =
   return snows
 
 
-proc quickSort(snows: seq[ref Snow]): seq[ref Snow] =
+proc quicksort(snows: seq[ref Snow]): seq[ref Snow] =
   case snows.len
   of 0: return @[]
   of 1: return snows
@@ -89,7 +89,43 @@ proc quickSort(snows: seq[ref Snow]): seq[ref Snow] =
                    )
                    , ref Snow
           ]
-    return quickSort(smallOrEqual) & snows[0] & quickSort(large)
+    return quicksort(smallOrEqual) & snows[0] & quicksort(large)
+
+
+proc median3[T: SomeNumber](x, y, z: T): T =
+  if x < y:
+    if y < z: return y
+    elif z < x: return x
+    else: return z
+  else:
+    if z < y: return y
+    elif x < z: return x
+    else: return z
+
+
+proc quicksort2(list: var seq[ref Snow], left: int, right: int) =
+  let diff: int = right - left
+  if diff <= 0: return
+  elif diff == 1:
+    if list[left].size <= list[right].size: return
+    else:
+      swap(list[left], list[right])
+      return
+  else:
+    var
+      i: int = left
+      j: int = right
+      pivot: float = median3(list[i].size, list[i + ((j - i) div 2)].size, list[j].size)
+    while true:
+      while list[i].size < pivot: i += 1
+      while pivot < list[j].size: j -= 1
+      if i >= j: break
+      else:
+        swap(list[i], list[j])
+        i += 1
+        j -= 1
+    quicksort2(list, left, i - 1)
+    quicksort2(list, j + 1, right)
 
 
 proc main() =
@@ -103,7 +139,7 @@ proc main() =
     MS: int = 16
   randomize()
   var snows: seq[ref Snow] = makeSnow(N, FWIDTH, FHEIGHT)
-  snows = snows.quickSort()
+  snows.quicksort2(low(snows), high(snows))
   let canvas: Canvas = Canvas(document.getElementById(ID))
   canvas.width = WIDTH
   canvas.height = HEIGHT
