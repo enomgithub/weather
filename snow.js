@@ -329,6 +329,7 @@ function makeSnow_64212(n_64214, width_64215, height_64216) {
 	var result_64219 = null;
 
 	BeforeRet: do {
+		randomize_60001();
 		var snows_64262 = newSeq_64238(n_64214);
 		L1: do {
 			var i_64274 = 0;
@@ -582,7 +583,6 @@ function main_64824() {
 			
 		}
 
-		randomize_60001();
 		var snows_64840 = [makeSnow_64212(100, 1.0000000000000000e+003, 5.0000000000000000e+002)];
 		quicksort2_64738(snows_64840, 0, 0, (snows_64840[0] != null ? (snows_64840[0].length-1) : -1));
 		var canvas_64857 = document.getElementById("snow");

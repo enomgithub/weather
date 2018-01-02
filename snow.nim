@@ -2,7 +2,7 @@ import basic2d
 import dom
 import future
 import math
-from random import random, randomize
+import random
 
 import HTML5_canvas as cvs
 
@@ -52,6 +52,7 @@ proc loop(canvas: Canvas, snows: seq[ref Snow]) =
 
 
 proc makeSnow(n: int, width: float, height: float): seq[ref Snow] =
+  randomize()
   const sizeMax: float = 22.0
   var snows: seq[ref Snow] = newSeq[ref Snow](n)
   for i in countup(0, n - 1):
@@ -137,7 +138,6 @@ proc main() =
     FHEIGHT: float = HEIGHT.toFloat
     N: int = 100
     MS: int = 16
-  randomize()
   var snows: seq[ref Snow] = makeSnow(N, FWIDTH, FHEIGHT)
   snows.quicksort2(low(snows), high(snows))
   let canvas: Canvas = Canvas(document.getElementById(ID))
