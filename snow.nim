@@ -116,7 +116,11 @@ proc quicksort2(list: var seq[ref Snow], left: int, right: int) =
     var
       i: int = left
       j: int = right
-      pivot: float = median3(list[i].size, list[i + ((j - i) div 2)].size, list[j].size)
+      pivot: float =
+        median3( list[i].size
+               , list[i + ((j - i) div 2)].size
+               , list[j].size
+               )
     while true:
       while list[i].size < pivot: i += 1
       while pivot < list[j].size: j -= 1
