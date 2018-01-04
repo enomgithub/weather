@@ -7,13 +7,15 @@ import random
 import HTML5_canvas as cvs
 
 
-type Snow = object
-  pt: Point2d
-  size: float
-  color: cstring
+type
+  Snow = ref SnowObj
+  SnowObj = object
+    pt: Point2d
+    size: float
+    color: cstring
 
 
-proc draw(ctx: CanvasRenderingContext2D, snow: ref Snow) =
+proc draw(ctx: CanvasRenderingContext2D, snow: Snow) =
   const twoPi: float = math.PI * 2.0
   ctx.fillStyle = snow.color
   ctx.beginPath()
@@ -21,7 +23,7 @@ proc draw(ctx: CanvasRenderingContext2D, snow: ref Snow) =
   ctx.fill()
 
 
-proc move(snow: ref Snow, width: float, height: float) =
+proc move(snow: Snow, width: float, height: float) =
   const
     dvxMax: float = 3.0
     dvyMax: float = 5.0
@@ -40,7 +42,7 @@ proc cls(ctx: CanvasRenderingContext2D, width: float, height: float) =
   ctx.fillRect(0.0, 0.0, width, height)
 
 
-proc loop(canvas: Canvas, snows: seq[ref Snow]) =
+proc loop(canvas: Canvas, snows: seq[Snow]) =
   let
     width: float = canvas.width.toFloat
     height: float = canvas.height.toFloat
@@ -51,14 +53,14 @@ proc loop(canvas: Canvas, snows: seq[ref Snow]) =
     move(snow, width, height)
 
 
-proc makeSnow(n: int, width: float, height: float): seq[ref Snow] =
+proc makeSnow(n: int, width: float, height: float): seq[Snow] =
   randomize()
   const sizeMax: float = 22.0
-  var snows: seq[ref Snow] = newSeq[ref Snow](n)
+  var snows: seq[Snow] = newSeq[Snow](n)
   for i in countup(0, n - 1):
     let
       size: float = random(max=1.0) * sizeMax
-      snow: ref Snow = Snow.new
+      snow: Snow = Snow.new
     snow.pt = basic2d.point2d(random(max=width), random(max=height))
     snow.size = size
     snow.color =
@@ -70,25 +72,25 @@ proc makeSnow(n: int, width: float, height: float): seq[ref Snow] =
   return snows
 
 
-proc quicksort(snows: seq[ref Snow]): seq[ref Snow] =
+proc quicksort(snows: seq[Snow]): seq[Snow] =
   case snows.len
   of 0: return @[]
   of 1: return snows
   else:
     let
-      smallOrEqual: seq[ref Snow] =
+      smallOrEqual: seq[Snow] =
         lc[ snow | ( snow <- snows
                    , snow.size <= snows[0].size
                    , snow != snows[0]
                    )
-                   , ref Snow
+                   , Snow
           ]
-      large: seq[ref Snow] =
+      large: seq[Snow] =
         lc[ snow | ( snow <- snows
                    , snow.size > snows[0].size
                    , snow != snows[0]
                    )
-                   , ref Snow
+                   , Snow
           ]
     return quicksort(smallOrEqual) & snows[0] & quicksort(large)
 
@@ -104,7 +106,7 @@ proc median3[T: SomeNumber](x, y, z: T): T =
     else: return z
 
 
-proc quicksort2(list: var seq[ref Snow], left: int, right: int) =
+proc quicksort2(list: var seq[Snow], left: int, right: int) =
   let diff: int = right - left
   if diff <= 0: return
   elif diff == 1:
@@ -142,7 +144,7 @@ proc main() =
     FHEIGHT: float = HEIGHT.toFloat
     N: int = 100
     MS: int = 16
-  var snows: seq[ref Snow] = makeSnow(N, FWIDTH, FHEIGHT)
+  var snows: seq[Snow] = makeSnow(N, FWIDTH, FHEIGHT)
   snows.quicksort2(low(snows), high(snows))
   let canvas: Canvas = Canvas(document.getElementById(ID))
   canvas.width = WIDTH
