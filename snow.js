@@ -485,8 +485,8 @@ function fillStyleeq__63089(ctx_63091, color_63092) {
 	
 }
 
-function cls_64050(ctx_64052, width_64053, height_64054) {
-		fillStyleeq__63089(ctx_64052, "#0D0015");
+function cls_64050(ctx_64052, width_64053, height_64054, color_64055) {
+		fillStyleeq__63089(ctx_64052, color_64055);
 		ctx_64052.fillRect(0.0, 0.0, width_64053, height_64054);
 
 	
@@ -553,10 +553,10 @@ function move_64016(snow_64018, width_64019, height_64020) {
 }
 
 function loop_64056(canvas_64058, snows_64060) {
-		var width_64061 = canvas_64058.width;
-		var height_64062 = canvas_64058.height;
-		var ctx_64063 = getContext2D_63513(canvas_64058);
-		cls_64050(ctx_64063, width_64061, height_64062);
+		var width_64062 = canvas_64058.width;
+		var height_64063 = canvas_64058.height;
+		var ctx_64064 = getContext2D_63513(canvas_64058);
+		cls_64050(ctx_64064, width_64062, height_64063, "#0D0015");
 		L1: do {
 			var snow_64202 = null;
 			var i_64209 = 0;
@@ -565,8 +565,8 @@ function loop_64056(canvas_64058, snows_64060) {
 					L3: while (true) {
 					if (!(i_64209 < L_64211)) break L3;
 						snow_64202 = snows_64060[i_64209];
-						draw_64010(ctx_64063, snow_64202);
-						move_64016(snow_64202, width_64061, height_64062);
+						draw_64010(ctx_64064, snow_64202);
+						move_64016(snow_64202, width_64062, height_64063);
 						i_64209 += 1;
 					}
 			} while(false);

@@ -36,21 +36,21 @@ proc move(snow: Snow, width: float, height: float) =
   if snow.pt.y > height: snow.pt.y -= height
 
 
-proc cls(ctx: CanvasRenderingContext2D, width: float, height: float) =
-  const bgcolor: cstring = "#0D0015"
-  ctx.fillStyle = bgcolor
+proc cls(ctx: CanvasRenderingContext2D, width: float, height: float, color: cstring) =
+  ctx.fillStyle = color
   ctx.fillRect(0.0, 0.0, width, height)
 
 
 proc loop(canvas: Canvas, snows: seq[Snow]) =
+  const bgcolor: cstring = "#0D0015"
   let
     width: float = canvas.width.toFloat
     height: float = canvas.height.toFloat
     ctx: CanvasRenderingContext2D = cvs.getContext2D(canvas)
-  ctx.cls(width, height)
+  ctx.cls(width, height, bgcolor)
   for snow in snows:
-    draw(ctx, snow)
-    move(snow, width, height)
+    ctx.draw(snow)
+    snow.move(width, height)
 
 
 proc makeSnow(n: int, width: float, height: float): seq[Snow] =
@@ -131,8 +131,8 @@ proc quicksort2(list: var seq[Snow], left: int, right: int) =
         swap(list[i], list[j])
         i += 1
         j -= 1
-    quicksort2(list, left, i - 1)
-    quicksort2(list, j + 1, right)
+    list.quicksort2(left, i - 1)
+    list.quicksort2(j + 1, right)
 
 
 proc main() =
@@ -150,10 +150,7 @@ proc main() =
   canvas.width = WIDTH
   canvas.height = HEIGHT
   var timer: ref TInterval =
-    setInterval( window
-               , proc() = loop(canvas, snows)
-               , MS
-               )
+    window.setInterval(proc() = loop(canvas, snows), MS)
 
 
 when isMainModule:
