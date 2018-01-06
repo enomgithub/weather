@@ -1,6 +1,5 @@
 import basic2d
 import dom
-import future
 import math
 import random
 
@@ -72,29 +71,6 @@ proc makeSnow(n: int, width: float, height: float): seq[Snow] =
   return snows
 
 
-proc quicksort(snows: seq[Snow]): seq[Snow] =
-  case snows.len
-  of 0: return @[]
-  of 1: return snows
-  else:
-    let
-      smallOrEqual: seq[Snow] =
-        lc[ snow | ( snow <- snows
-                   , snow.size <= snows[0].size
-                   , snow != snows[0]
-                   )
-                   , Snow
-          ]
-      large: seq[Snow] =
-        lc[ snow | ( snow <- snows
-                   , snow.size > snows[0].size
-                   , snow != snows[0]
-                   )
-                   , Snow
-          ]
-    return quicksort(smallOrEqual) & snows[0] & quicksort(large)
-
-
 proc median3[T: SomeNumber](x, y, z: T): T =
   if x < y:
     if y < z: return y
@@ -106,7 +82,7 @@ proc median3[T: SomeNumber](x, y, z: T): T =
     else: return z
 
 
-proc quicksort2(list: var seq[Snow], left: int, right: int) =
+proc quicksort(list: var seq[Snow], left: int, right: int) =
   let diff: int = right - left
   if diff <= 0: return
   elif diff == 1:
@@ -131,8 +107,8 @@ proc quicksort2(list: var seq[Snow], left: int, right: int) =
         swap(list[i], list[j])
         i += 1
         j -= 1
-    list.quicksort2(left, i - 1)
-    list.quicksort2(j + 1, right)
+    list.quicksort(left, i - 1)
+    list.quicksort(j + 1, right)
 
 
 proc main() =
@@ -145,7 +121,7 @@ proc main() =
     N: int = 100
     MS: int = 16
   var snows: seq[Snow] = makeSnow(N, FWIDTH, FHEIGHT)
-  snows.quicksort2(low(snows), high(snows))
+  snows.quicksort(low(snows), high(snows))
   let canvas: Canvas = Canvas(document.getElementById(ID))
   canvas.width = WIDTH
   canvas.height = HEIGHT
