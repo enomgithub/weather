@@ -35,7 +35,7 @@ proc move(snow: Snow, width: float, height: float) =
   if snow.pt.y > height: snow.pt.y -= height
 
 
-proc cls(ctx: CanvasRenderingContext2D, width: float, height: float, color: cstring) =
+proc cls(ctx: CanvasRenderingContext2D, width, height: float, color: cstring) =
   ctx.fillStyle = color
   ctx.fillRect(0.0, 0.0, width, height)
 
@@ -121,7 +121,7 @@ proc main() =
     N: int = 100
     MS: int = 16
   var snows: seq[Snow] = makeSnow(N, FWIDTH, FHEIGHT)
-  snows.quicksort(low(snows), high(snows))
+  snows.quicksort(snows.low, snows.high)
   let canvas: Canvas = Canvas(document.getElementById(ID))
   canvas.width = WIDTH
   canvas.height = HEIGHT
