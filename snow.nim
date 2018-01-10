@@ -114,7 +114,7 @@ proc quicksort(list: var seq[Snow], left: int, right: int) =
 proc main() =
   const
     ID: cstring = "snow"
-    WIDTH: int = 1000
+    WIDTH: int = 1_000
     HEIGHT: int = 500
     FWIDTH: float = WIDTH.toFloat
     FHEIGHT: float = HEIGHT.toFloat
